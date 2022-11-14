@@ -78,6 +78,7 @@ const Home = () => {
                 theme="light"
             />
       <div className='home'>
+        <h2 className='p-3 m-3'><span className='teal-text'>Categories :</span>{(cat)?cat:<>All Blogs</>} </h2>
         <div className='posts mb-5'>
           {data.slice(0).reverse().slice(page, page + 10).map((item) => {
             return <div key={item.id} className='post'>
@@ -88,7 +89,7 @@ const Home = () => {
               <div className='content mt-4 justify-content-between mx-2'>
                 <p className='fs-3 teal-text'>{item.title}</p>
                 <p className='fs-4 blu text-lowercase'>  <ReactQuill 
-                  value={item.description.trim()}
+                  value={item.description.slice(0,350).trim()}
                   readOnly={true}
                   theme={"bubble"}
                 /></p>

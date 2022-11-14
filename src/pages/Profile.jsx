@@ -15,14 +15,20 @@ function Profile() {
     const [email, setEmail] = useState("");
     var user = JSON.parse(localStorage.getItem('details'));
 
-    const notify = () => {
-        toast("Successfully updated please Login Again! ")
-        window.localStorage.removeItem("details");
-        window.localStorage.removeItem("auth_token");
-        setTimeout(() => {
-            navigate('/')
-            window.location.reload()
-        }, 3000)
+
+ 
+    const updateDetails = () => {
+        toast("Successfully updated details! ")
+
+          axios.post("http://localhost:8000/api/auth/updateprofile", {id:user.id}).then(
+            (success)=>{
+                console.log("success data" , success)
+               window.localStorage.setItem("details",JSON.stringify(success.data[0]))
+               navigate('/profile')
+            },(err)=>{
+                console.log("error", err)
+            }
+          )
     };
 
    const error =(err)=>{
@@ -39,6 +45,7 @@ function Profile() {
         setEmail(user.email)
     }, [])
 
+
     const handleSavechanges = (e) => {
         const formData = new FormData()
         e.preventDefault()
@@ -46,26 +53,29 @@ function Profile() {
           if(!userName || !email){ 
             error("UserName && Email cannot be Empty")
           }else if(!/^[A-Za-z][A-Za-z0-9_]{7,29}$/.test(userName)) {
-              error("invalid user Name ")
+              error("invalid user Name should start with an alphabet, with no space  length  between 8-29 ")
           }
           else if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
             error("Invalid Email address")
           }else if(!userName){
             error("Username cannot be empty")
           }
-          else if (userName !== user.username || email !== user.email || image){
+          else if (userName !== user.username || email !== user.email || image){ 
             formData.append('image', image);
             formData.append('username',userName);
             formData.append('email',email);
             formData.append('id', user.id);
                 axios.post("http://localhost:8000/post",formData).then((success) => {
-                    notify()
-                    console.log(success)
+                    updateDetails()
+                    console.log(success , "success message")
                 },
                     (err) => {
-                        console.log(err)
+                        console.log(err , "errpr message ")
+                        error("Invalid file Type")
                     }
                 )
+          }else{
+            error("No Changes  found")
           }
      
     }
@@ -114,7 +124,7 @@ function Profile() {
                         </div>
                         <form>
                             <img src={(image)?imgpath :user.profile} className='round' />
-                            <div className='mt-2'> {(image) ? <p>selected Succesfully</p> : <> <label htmlFor="upd"><i className="bi bi-upload mx-2"></i> Change Image</label>
+                            <div className='mt-2'> {(image) ? <p>Selected Succesfully</p> : <> <label htmlFor="upd" style={{"cursor": "pointer"}}><i className="bi bi-upload mx-2" ></i> Change Image</label>
                                 <input type='file' id='upd' value={imgpath} onChange={changeHandler} style={{ display: "none" }} /> <br /></>}
                             </div>
                             <div className="details">

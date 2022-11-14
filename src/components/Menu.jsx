@@ -36,11 +36,11 @@ const handleDecrement =()=>{
     setStart((prev)=>(prev-1))
   }
 }
-  
+
   return (
     <div className="menu">
       <h2>Other posts you may like</h2>
-      <div className='my-3' onClick={handleDecrement}><i className="bi bi-arrow-up-square-fill h3 ">Prev...</i></div>
+     {(start)?<div className='my-3' onClick={handleDecrement}><i className="bi bi-arrow-up-square-fill h3 ">Prev...</i></div>:<div></div>} 
       {
         (data) ? <div >
           {(data).slice(start, start + 3).map((item) => (
@@ -50,7 +50,7 @@ const handleDecrement =()=>{
               <button onClick={() => { handleClick(item.id) }}>Read More</button>
             </div>
           ))}
-          <div onClick={handleIncrement}><i className="bi bi-arrow-down-square-fill h3"><span className='mx-2'>Next...</span></i></div>
+            {} <div onClick={handleIncrement}><i className="bi bi-arrow-down-square-fill h3"><span className='mx-2'>Next...</span></i></div>
         </div> : <div className='position-absolute top-50 end-50'>
           <div className="spinner">
             <div></div>

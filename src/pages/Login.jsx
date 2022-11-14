@@ -9,7 +9,9 @@ const Login = () => {
  // const [user, setUser] = useState();
   const [values, setValues] = useState({
     email:'',
-    password:''
+    emailError:'',
+    password:'',
+    passwordError:''
   })
   const [error,setError]=useState(null)
  const navigate = useNavigate()
@@ -19,7 +21,7 @@ const Login = () => {
     setTimeout(()=>{
       navigate("/")
     },
-    3000)
+    1500)
  }
 
 const handleChange =async e=>{
@@ -27,8 +29,29 @@ const handleChange =async e=>{
   setValues(prev=>({...prev,[e.target.name]:e.target.value}))
 }
 
+const removeError = (event) => {
+  if (event.target.value === '')
+    setValues((prev) => ({ ...prev, [event.target.name + 'Error']: "" }));
+}
+
+let validate = (selecteditem) => {
+  
+ if ((selecteditem.target.name ==='email')) {
+  if(!(selecteditem.target.value)) setValues((prev) => ({ ...prev, [selecteditem.target.name + 'Error']: `Please Enter email / Username it Cannot be empty` }))
+ }
+ else if (!(selecteditem.target.value))setValues((prev) => ({ ...prev, [selecteditem.target.name + 'Error']: `Please Enter ${selecteditem.target.name} it Cannot be empty` }))
+  
+}
+
+
 const handleSubmit =async e=>{
   e.preventDefault();
+
+  if(!values.email)setValues((prev) => ({ ...prev, ['emailError']: "Please Enter email / Username it Cannot be empty" }));
+  if(!values.password)setValues((prev) => ({ ...prev, ['passwordError']: "Please password it Cannot be empty" }));
+
+   
+
  if(values.email && values.password)
 axios.post("http://localhost:8000/api/auth/login",values).then(
   (success)=>{
@@ -43,15 +66,12 @@ axios.post("http://localhost:8000/api/auth/login",values).then(
     console.log("inside error" , error)
   }
 )
-else setError("please fill both the fields to proceed ")
-
 }
-
   return (
     <>
     <ToastContainer
                 position="top-center"
-                autoClose={2000}
+                autoClose={1000}
                 hideProgressBar={false}
                 newestOnTop={false}
                 closeOnClick
@@ -69,18 +89,21 @@ else setError("please fill both the fields to proceed ")
             <form >
               <div className="form-group">
                 <label  className="form-label mt-4 text-light">Email address / Username</label>
-                <input type="email" className="form-control"  placeholder="Enter email / Username" name='email' onChange={handleChange} />
+                <input type="email" className="form-control"  placeholder="Enter email / Username" name='email' onChange={handleChange} onBlur={(e) => { validate(e) }}  onFocus={removeError} />
                 <small className="form-text text-light">We'll never share your email with anyone else.</small>
+                {(values.emailError)?<p className=' text-light dark'>{values.emailError}</p>:<div></div>}
               </div>
               <div className="form-group">
                 <label  className="form-label mt-4 text-light">Password</label>
-                <input type="password" className="form-control"  placeholder="Password" name='password' autoComplete='on' onChange={handleChange} />
+                <input type="password" className="form-control"  placeholder="Password" name='password' autoComplete='on' onChange={handleChange} onBlur={(e) => { validate(e) }} onFocus={removeError}/>
               </div>
-              {(error)?<p className='text text-danger dark'>{error}</p>:<br />}
+              {(values.passwordError)?<p className=' text-light dark'>{values.passwordError}</p>:<div></div>}
               <div className='form-group mt-2'>
                 <button className='btn btn-primary mb-2' onClick={handleSubmit}>Login </button>
                 
-                <div className='mb-5'>Don't you have an account ? <Link className='text-light' to='/register'>Register</Link></div>
+                {(error)?<p className=' text-light dark'>{error}</p>:<div></div>}
+
+                <div className='mb-5 mt-2'>Don't you have an account ? <Link className='text-light' to='/register'>Register</Link></div>
               </div>
             </form>
           </div>

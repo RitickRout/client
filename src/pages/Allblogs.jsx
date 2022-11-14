@@ -35,7 +35,7 @@ const handleClick = (ind) => {
        
        </> : 
        <>
-         {(posts) && (posts).map((item) => (
+         {(posts) && (posts).slice(0).reverse().map((item) => (
             <div className="Post" style={{"height":"350px"}} key={item.id}>
               <img src={item.img} alt="" />
               <h4>{item.title}</h4>
@@ -44,11 +44,7 @@ const handleClick = (ind) => {
           ))}
        </>
        }
-    
     </>
-    
-
-    
   )
 }
 

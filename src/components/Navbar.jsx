@@ -8,13 +8,23 @@ import Categories from './Categories'
 export const Navbar = () => {
   const navigate = useNavigate()
   let user =JSON.parse(localStorage.getItem('details'))
+  let userAuth =localStorage.getItem('auth_token')
   var [refesh,setrefresh] = useState(false)
     useEffect(()=>{
     console.log("refresh required")
      },[refesh])
 
-  
+  //    function parseJwt (token) {
+  //     var base64Url = token.split('.')[1];
+  //     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  //     var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+  //         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  //     }).join(''));
+  //     return JSON.parse(jsonPayload);
+  // }
 
+
+  
   const clickHandler = () => {
     window.localStorage.removeItem("details");
     window.localStorage.removeItem("auth_token");
@@ -27,7 +37,7 @@ export const Navbar = () => {
         <nav className="navbar navbar-expand-lg navbar-dark teal-bg p-4">
           <div className="container-fluid">
             <Link className="navbar-brand" to='/'>
-              <img src={logo} className='logo' />
+              <img src={logo} className='logo' onClick={()=>{ window.scrollTo(0, 0)}} />
             </Link>
             <div className="collapse navbar-collapse" id="navbarColor01">
               <ul className="navbar-nav me-auto ">
@@ -36,7 +46,7 @@ export const Navbar = () => {
                   <span className="visually-hidden">(current)</span>
                 </li>
                 {(user)? <li className="nav-item">
-                  <Link className="nav-link" to='/write'> <i className="bi bi-pencil-square mx-2"></i> Write</Link>
+                  <Link className="nav-link" to='/write'> <i className="bi bi-pencil-square mx-2" ></i> Write</Link>
                 </li>:<li></li>}
                
                 <li className='nav-item'>

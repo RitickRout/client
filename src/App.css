@@ -419,7 +419,7 @@ justify-content: space-between;
 }
 
 .dark{
-    background-color: white !important;
+    text-shadow: 0 0 3px #FF0000, 0 0 5px #ff0000;
 }
 
 .des{

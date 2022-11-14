@@ -25,42 +25,70 @@ const Write = () => {
 
 
   useEffect(() => {
-    if (id) axios.post("http://localhost:8000/api/posts/fetchsinglepost", { id }).then(
-      (success) => {
-        console.log("the post to be edited ", success.data[0]);
-        setValue(success.data[0].description);
-        setCat(success.data[0].Category);
-        setTitle(success.data[0].title);
-        setimagelink(success.data[0].img);
-      }, (err) => {
-        console.log(err)
-      }
-    )
-  }, [])
+    if (id) {
+      axios.post("http://localhost:8000/api/posts/fetchsinglepost", { id }).then(
+        (success) => {
+          console.log("the post to be edited ", success.data[0]);
+          setValue(success.data[0].description);
+          setCat(success.data[0].Category);
+          setTitle(success.data[0].title);
+          setimagelink(success.data[0].img);
+        }, (err) => {
+          console.log(err)
+        }
+      )
+    } else {
+      setValue("");
+      setCat("");
+      setTitle("");
+      setimagelink("");
+    }
+  }, [id])
 
   const handleUpdate = () => {
-    if (id) axios.post("http://localhost:8000/api/posts/edit", {
-      "id": id,
-      "img": imagelink,
-      "title": title,
-      "description": value,
-      "Category": cat
-    }).then(success => navigate(`/post/${id}`), err => console.log(err))
+    if (id) {
+      if ((value.trim().length <150 || cat.trim() === "" || title.trim().length <40 || imagelink.trim() === "")) {
+        if (!value.trim()) {
+          notify("Description cannot be empty ")
+        }
+        else if (value.trim().length < 150) {
+          notify("Description cannot be less than 150 words ")
+        }
+        if (!cat.trim()) {
+          notify("Please select the Category")
+        } if (title.trim().length < 40) {
+          notify("title cannot be less than 40 words ")
+        } if (!imagelink.trim()) {
+          notify("image link is required")
+        }
+      } else  axios.post("http://localhost:8000/api/posts/edit", {
+        "id": id,
+        "img": imagelink,
+        "title": title,
+        "description": value,
+        "Category": cat
+      }).then(success => navigate(`/post/${id}`), err => console.log(err))
+    }
   }
   const handlePost = () => {
     console.log(value, cat, title, imagelink, user.id)
 
-    if (value.trim() === "" || cat.trim() === "" || title.trim() === "" || imagelink.trim() === "") {
+    if (value.trim() === "" || cat.trim() === "" || title.trim() === "" || imagelink.trim() === "" ||value.trim().length <150 ||title.trim().length <12) {
 
       if (!value) {
-         notify("Description cannot be Empty")
-
-        }
-      if (!cat) {
+        notify("Description cannot be Empty")
+      } else if (value.trim().length < 150) {
+        notify("Description should be 150 or more ")
+      }
+      if (!cat.trim()) {
         notify("Please select the Category")
-      } if (!title) {
+      } if (!title.trim()) {
         notify("title cannot be empty")
-      } if (!imagelink) {
+      } else if (title.trim().length < 12) {
+        notify("title length should be 12 or more")
+      }
+
+      if (!imagelink.trim()) {
         notify("image link is required")
       }
     } else {
@@ -88,7 +116,7 @@ const Write = () => {
 
   return (
     <div className="add">
-      <ToastContainer position="top-center" autoClose={1000} />
+      <ToastContainer position="top-center" autoClose={2000} />
       <div className="content">
         <label className='h3'>Title<span className='text-danger'>*</span>:</label>
         <input type='text' placeholder='Title' value={title} onChange={(e) => { setTitle(e.target.value) }} />

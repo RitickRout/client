@@ -42,6 +42,7 @@ const Single = () => {
  
 
  const handleComment =()=>{
+  if(inp.trim())
   axios.post("http://localhost:8000/api/posts/postcomment" ,{pid:id , uid:user.id,comment:inp}).then(
     (sucecss)=>{
       console.log("success",sucecss)
@@ -77,8 +78,11 @@ if(data.length){
         <div className="user">
         <img src={data[0].profile} alt='user-img-missing' />
           <div className="info">
-            <span> {data[0].username}</span>
-             <p>Posted 2 days ago</p>
+            <span> UserName :<span className='text-info'> {data[0].username}</span> </span>
+             <p>
+             Category : <span className='text-danger'>{data[0].Category}</span>
+             </p>
+             
           </div>
           <div className="edit">
             {(data[0].username === user.username)?
@@ -101,32 +105,33 @@ if(data.length){
                 />
          </p>
           <div  className=''> 
+          {(user)?<>
+            <input  placeholder='comments' type="text" value={inp}   onChange={(e)=>{setInp(e.target.value)}}   className='w-100 p-2 mt-4'/>
+               <div className='btn btn-primary mt-2'  onClick={handleComment} > Leave a Comment</div></>:<></>}
       {
         (comments)?<div>{comments.slice(0).reverse().map((item)=>{
 
           
-      //  time = item.updated_at;
-      // splitarr = time.split('T');
-      // time  = splitarr[1].split('.')[0]
-      //  date = splitarr[0]
+       time = item.createdAt;
+      splitarr = time.split('T');
+      time  = splitarr[1].split('.')[0]
+       date = splitarr[0]
      
      return <div className="cmt my-3">
      <div className="comment-box">
        <div className="user-box">
          <img src={item.profile} />
-         <p className='h5 ms-4'> {item.username}</p>
+         <p className='h5 '> {item.username}</p>
        </div>
        <div className="comment">
          <p>{item.comment}</p>
-         {/* <small> Time : {time} Date :{date}  </small> */}
+         <small>  Date :{date}  </small>
          </div>
      </div>
    </div>
         })} </div>:<p></p>
       }
-      {(user)?<>
-            <input placeholder='comments' type="text" value={inp}   onChange={(e)=>{setInp(e.target.value)}}   className='w-100 p-2'/>
-               <div className='btn btn-primary mt-2'  onClick={handleComment} > Leave a Comment</div></>:<></>}
+ 
           </div>
 
       </div>
