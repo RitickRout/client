@@ -18,10 +18,6 @@ const Register = () => {
   const navigate = useNavigate()
   const notify = () => {
     toast("Successfully Registered please Login! ");
-    setTimeout(() => {
-      navigate("/login")
-    },
-      3000)
   }
 
   const regExvalidation = (event) => {
@@ -88,7 +84,11 @@ const Register = () => {
     if (values.username && values.email && values.password) {
       if (values.usernameError === '' && values.emailError === '' && values.passwordError === '')
         try {
-          await axios.post("http://localhost:8000/api/auth/register", values).then(notify())
+          await axios.post("http://localhost:8000/api/auth/register", values)
+          notify()
+          setTimeout(()=>{
+            navigate('/login')
+          },1000)
         } catch (err) {
           console.log(err)
           setError(err.response.data)
@@ -101,7 +101,7 @@ const Register = () => {
     <>
       <ToastContainer
         position="top-center"
-        autoClose={2000}
+        autoClose={1000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -109,7 +109,7 @@ const Register = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light dark"
+        theme="light"
       />
       <div className='container '>
         <div className="row">

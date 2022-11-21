@@ -47,7 +47,7 @@ const Write = () => {
 
   const handleUpdate = () => {
     if (id) {
-      if ((value.trim().length <150 || cat.trim() === "" || title.trim().length <40 || imagelink.trim() === "")) {
+      if ((value.trim().length <150 || cat.trim() === "" || title.trim().length <12 || imagelink.trim() === "")) {
         if (!value.trim()) {
           notify("Description cannot be empty ")
         }
@@ -56,8 +56,8 @@ const Write = () => {
         }
         if (!cat.trim()) {
           notify("Please select the Category")
-        } if (title.trim().length < 40) {
-          notify("title cannot be less than 40 words ")
+        } if (title.trim().length < 12) {
+          notify("title cannot be less than 12 words ")
         } if (!imagelink.trim()) {
           notify("image link is required")
         }
