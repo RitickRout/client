@@ -12,6 +12,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 const Write = () => {
+  var token = window.localStorage.getItem("auth_token");
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  }
 
   const notify = (msg) => { toast(msg) }
   const [value, setValue] = useState("");
@@ -26,9 +31,9 @@ const Write = () => {
 
   useEffect(() => {
     if (id) {
-      axios.post("http://localhost:8000/api/posts/fetchsinglepost", { id }).then(
+      axios.post("http://localhost:8000/api/posts/fetchsinglepost", { id },{headers:headers}).then(
         (success) => {
-          console.log("the post to be edited ", success.data[0]);
+          // console.log("the post to be edited ", success.data[0]);
           setValue(success.data[0].description);
           setCat(success.data[0].Category);
           setTitle(success.data[0].title);
@@ -44,6 +49,9 @@ const Write = () => {
       setimagelink("");
     }
   }, [id])
+  function isImage(url) {
+    return /(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url);
+  }
 
   const handleUpdate = () => {
     if (id) {
@@ -61,13 +69,17 @@ const Write = () => {
         } if (!imagelink.trim()) {
           notify("image link is required")
         }
-      } else  axios.post("http://localhost:8000/api/posts/edit", {
+      } else if(isImage(imagelink)) {
+       axios.post("http://localhost:8000/api/posts/edit", {
         "id": id,
         "img": imagelink,
         "title": title,
         "description": value,
         "Category": cat
-      }).then(success => navigate(`/post/${id}`), err => console.log(err))
+      },{headers:headers}).then(success => navigate(`/post/${id}`), err => console.log(err))
+    }else{
+      notify("image link should be valid")
+    }
     }
   }
   const handlePost = () => {
@@ -91,14 +103,14 @@ const Write = () => {
       if (!imagelink.trim()) {
         notify("image link is required")
       }
-    } else {
+    } else if(isImage(imagelink)) {
       axios.post("http://localhost:8000/api/posts/postBlog", {
         "uid": user.id,
         "img": imagelink.trim(),
         "title": title.trim(),
         "description": value.trim(),
         "category": cat
-      }).then((success) => {
+      },{headers:headers}).then((success) => {
         console.log(success);
         navigate('/');
 
@@ -107,31 +119,36 @@ const Write = () => {
           console.log(err)
         }
       )
+    }else{
+      notify("image link should be valid")
     }
 
   }
 
-  console.log("the input values ", value, title)
 
 
   return (
     <div className="add">
       <ToastContainer position="top-center" autoClose={2000} />
-      <div className="content">
+      <div className="content margin">
         <label className='h3'>Title<span className='text-danger'>*</span>:</label>
-        <input type='text' placeholder='Title' value={title} onChange={(e) => { setTitle(e.target.value) }} />
+        <input type='text' placeholder='Title' value={title} onChange={(e) => { setTitle(e.target.value) }}  className='m-2'/>
+        {(imagelink)?<>
+        <h3>{(isImage(imagelink))?"Image Preview":<span className='text-danger'>Invalid image Link</span>}</h3>
+         {(isImage(imagelink))?<img src={(isImage(imagelink))?imagelink:""} alt="image-link missing" />:null} 
+        </>:null}
         <label className='h3'>ImageLink<span className='text-danger'>*</span>:</label>
         <input placeholder='imageLink' value={imagelink} onChange={(e) => { setimagelink(e.target.value) }} />
         <label className='h3'>Description<span className='text-danger'>*</span>:</label>
 
-        <ReactQuill theme="snow" value={value} onChange={setValue} className="des" />;
+        <ReactQuill theme="snow" value={value} onChange={setValue} className="des mb-5 w-100 " />
 
 
         {/* {(id)?<textarea type='text' placeholder='Description' className='desc' value={value}  onChange={(e)=>{setValue(e.target.value)}} />:
       <Editor editorState={value} onChange={setValue} />
      }  */}
       </div>
-      <div className="menu">
+      <div className="menu h-75 mt-5">
         <div className="item justify-content-around">
           {/* <h3>Publish</h3>
       <span>

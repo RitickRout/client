@@ -21,7 +21,7 @@ const Home = () => {
     () => {
       axios.get('http://localhost:8000/api/posts').then(
         (success) => {
-          console.log(success)
+          //console.log(success)
           if (cat) {
             setPage(0)
             temp = success.data.filter((item) => {
@@ -81,7 +81,8 @@ const Home = () => {
         <h2 className='p-3 m-3'><span className='teal-text'>Categories :</span>{(cat)?cat:<>All Blogs</>} </h2>
         <div className='posts mb-5'>
           {data.slice(0).reverse().slice(page, page + 10).map((item) => {
-            return <div key={item.id} className='post'>
+            return <Link to={`post/${item.id}`} style={{textDecoration:"none"}}>
+              <div key={item.id} className='post'>
               <div className='img'>
                 <img src={item.img} alt={item.id} />
                 <div className='bg'></div>
@@ -98,6 +99,7 @@ const Home = () => {
                 <hr />
               </div>
             </div>
+            </Link> 
           })}
           <div className="buttons container mb-4 ">
             <button className='w-25 btn' onClick={() => (clickHandler("-"))}>Prev..</button>

@@ -12,7 +12,10 @@ const Register = () => {
     email: '',
     emailError: '',
     password: '',
-    passwordError: ''
+    passwordError: '',
+    confirmpassword: '',
+    confirmpasswordError: '',
+    confirmpasswordErrormsg:''
   })
   const [err, setError] = useState(null)
   const navigate = useNavigate()
@@ -22,7 +25,6 @@ const Register = () => {
 
   const regExvalidation = (event) => {
     if (event.target.name === 'username') {
-
       if (!/^[A-Za-z]/.test(event.target.value))
         setValues((prev) => ({ ...prev, [event.target.name + 'Error']: `${event.target.name}  should start with an alphabet, ` }))
       else if (!/^[A-Za-z][A-Za-z0-9_]{7,29}$/.test(event.target.value)) {
@@ -30,7 +32,6 @@ const Register = () => {
       } else {
         setValues((prev) => ({ ...prev, [event.target.name + 'Error']: `` }))
       }
-
     }
     if (event.target.name === 'email') {
       console.log(values.email)
@@ -54,7 +55,7 @@ const Register = () => {
   }
   let validate = (selecteditem) => {
     if (!(selecteditem.target.value)) {
-      
+
       setValues((prev) => ({ ...prev, [selecteditem.target.name + 'Error']: `Please Enter ${selecteditem.target.name} it Cannot be empty` }))
 
     }
@@ -63,6 +64,16 @@ const Register = () => {
   const handleChange = async e => {
     setError("")
     setValues(prev => ({ ...prev, [e.target.name]: e.target.value.trim() }))
+
+    if (e.target.name === 'confirmpassword') {
+      if (e.target.value === values.password) {
+        setValues((prev) => ({ ...prev, ["confirmpasswordError"]: true }))
+      } else {
+        setValues((prev) => ({ ...prev, ["confirmpasswordError"]: false }))
+      }
+    }
+
+
     regExvalidation(e)
   }
 
@@ -74,29 +85,32 @@ const Register = () => {
 
 
   const handleSubmit = async e => {
-    if (values.username === '')setValues((prev) => ({ ...prev, [ 'usernameError']: "Please Enter username it Cannot be empty" }))
-
-    if (values.email === '')setValues((prev) => ({ ...prev, [ 'emailError']: "Please Enter username it Cannot be empty" }))
-
-    if (values.password === '')setValues((prev) => ({ ...prev, [ 'passwordError']: "Please Enter username it Cannot be empty" }))
-
     e.preventDefault();
-    if (values.username && values.email && values.password) {
-      if (values.usernameError === '' && values.emailError === '' && values.passwordError === '')
+    if (values.username === '') setValues((prev) => ({ ...prev, ['usernameError']: "Please Enter username it Cannot be empty" }))
+
+    if (values.email === '') setValues((prev) => ({ ...prev, ['emailError']: "Please Enter Email it Cannot be empty" }))
+
+    if (values.password === '') setValues((prev) => ({ ...prev, ['passwordError']: "Please Enter password it Cannot be empty" }))
+
+  
+    if(!values.passwordError && !values.confirmpassword)
+    if(values.password && values.passwordError==="") setValues((prev) => ({ ...prev, ["confirmpasswordErrormsg"]: "Please Re-Enter password to proceed" }))
+
+ 
+    if (values.username && values.email && values.password && values.confirmpassword) {
+      if (values.usernameError === '' && values.emailError === '' && values.passwordError === '' && values.confirmpasswordError)
         try {
           await axios.post("http://localhost:8000/api/auth/register", values)
           notify()
-          setTimeout(()=>{
+          setTimeout(() => {
             navigate('/login')
-          },1000)
+          }, 1000)
         } catch (err) {
           console.log(err)
           setError(err.response.data)
         }
     }
-
   }
-
   return (
     <>
       <ToastContainer
@@ -115,25 +129,37 @@ const Register = () => {
         <div className="row">
           <div className="col-md-4"></div>
           <div className="col-md-4 mt-5 border border-primary teal-bg p-5 rounded-3">
-            <h1 className='text-center'>Register</h1>
+            <h1 className='text-center text-light'>Register</h1>
             <form >
               <div className="form-group">
-                <label className="form-label mt-4">Username <span className='text-light dark h5 '>*</span></label>
+                <label className="form-label mt-4 text-light">Username <span className='text-light dark h5 '>*</span></label>
                 <input type="text" className="form-control" placeholder="Username" name='username' onChange={handleChange} onBlur={(e) => { validate(e) }} onFocus={removeError} />
                 {(values.usernameError) ? <div className='text-light dark  '> {values.usernameError}</div> : <br />}
               </div>
 
               <div className="form-group">
-                <label className="form-label mt-4">Email address <span className='text-light dark h5'>*</span></label>
+                <label className="form-label mt-4 text-light">Email address <span className='text-light dark h5'>*</span></label>
                 <input type="email" className="form-control" placeholder="Enter email" name='email' onChange={handleChange} onBlur={(e) => { validate(e) }} onFocus={removeError} />
                 <small className="form-text text-light ">We'll never share your email with anyone else.</small><br />
                 {(values.emailError) ? <div className='text-light dark '>{values.emailError}</div> : <br />}
               </div>
 
               <div className="form-group">
-                <label className="form-label mt-4">Password <span className='text-light dark h5'>*</span></label>
+                <label className="form-label mt-4 text-light">Password <span className='text-light dark h5'>*</span></label>
                 <input type="password" className="form-control" name='password' placeholder="Password" autoComplete='on' onChange={handleChange} onBlur={(e) => { validate(e) }} onFocus={removeError} />
                 {(values.passwordError) ? <div className='text-light dark '>{values.passwordError}</div> : <br />}
+              </div>
+              <div className="form-group">
+                <label className="form-label mt-4 text-light">Confirm password <span className='text-light dark h5'>*</span></label>
+                <input type="password" className="form-control" name='confirmpassword' placeholder="Confirm Password" autoComplete='on' onChange={handleChange} onBlur={(e) => {
+                }} onFocus={(e)=>{
+                  setValues((prev) => ({ ...prev, ["confirmpasswordErrormsg"]: "" }))
+                }}  />
+                {(values.confirmpassword) ? (!values.passwordError) ? (values.confirmpasswordError) ? <div className=' text-success'> Password Matched Successfully</div> : <div className=' text-light dark'>Password Doesn't match</div> : null : null
+                }
+                {
+                  (values.confirmpasswordErrormsg)?<div className=' text-light dark'> {values.confirmpasswordErrormsg}</div>:null
+                }
               </div>
 
               <div className='form-group mt-2'>

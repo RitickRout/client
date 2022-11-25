@@ -11,7 +11,6 @@ export const Navbar = () => {
   let userAuth =localStorage.getItem('auth_token')
   var [refesh,setrefresh] = useState(false)
     useEffect(()=>{
-    console.log("refresh required")
      },[refesh])
 
   //    function parseJwt (token) {
@@ -29,22 +28,23 @@ export const Navbar = () => {
     window.localStorage.removeItem("details");
     window.localStorage.removeItem("auth_token");
     navigate('/')
+    window.location.reload();
     setrefresh(!refesh)
   }
   return (
     <>
-      <div className="bs-component sticky-top">
+      <div className="bs-component sticky-top col-md-12 ">
         <nav className="navbar navbar-expand-lg navbar-dark teal-bg p-4">
           <div className="container-fluid">
             <Link className="navbar-brand" to='/'>
-              <img src={logo} className='logo' onClick={()=>{ window.scrollTo(0, 0)}} />
+              <img src={logo} className='logo' onClick={()=>{ window.scrollTo(0, 0) ;navigate('/'); window.location.reload()}}  alt=''/>
             </Link>
             <div className="collapse navbar-collapse" id="navbarColor01">
               <ul className="navbar-nav me-auto ">
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link className="nav-link" to='/'> <i className="bi bi-house-door-fill mx-2"></i> Home </Link>
                   <span className="visually-hidden">(current)</span>
-                </li>
+                </li> */}
                 {(user)? <li className="nav-item">
                   <Link className="nav-link" to='/write'> <i className="bi bi-pencil-square mx-2" ></i> Write</Link>
                 </li>:<li></li>}
@@ -60,7 +60,7 @@ export const Navbar = () => {
                 {(user) ?
                   <Link className="nav-link "  >
                <span className="dropdown">
-               <img src={user.profile} className='userprofile dropdown-toggle' dropdown-toggle   aria-expanded="false" />
+               <img src={user.profile} className='userprofile dropdown-toggle' dropdown-toggle   aria-expanded="false" alt='' />
                 <ul className='dropdown-menu '>
                   <li className='dropdown-item'><Link className='text-decoration-none' to="/profile"><i className="bi bi-person-circle h5"></i>  <span className='mx-2'>{user.username}</span> </Link></li>
                   <li className='dropdown-item' onClick={clickHandler} > <Link to="/" className='nav-link'><i className="bi bi-box-arrow-right h5 red "></i> <span className='mx-2 text-danger'>Logout</span></Link></li>

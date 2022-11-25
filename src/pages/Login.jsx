@@ -20,6 +20,7 @@ const Login = () => {
     toast("Successfully Loggedin! ");
     setTimeout(() => {
       navigate("/")
+      window.location.reload();
     },
       1500)
   }
@@ -85,7 +86,7 @@ const Login = () => {
         <div className="row">
           <div className="col-md-4"></div>
           <div className="col-md-4 mt-5 border border-primary px-5 py-3 teal-bg rounded-2">
-            <h1 className='text-center mt-4'>Login Page</h1>
+            <h1 className='text-center text-light mt-4'>Login Page</h1>
             <form >
               <div className="form-group">
                 <label className="form-label mt-4 text-light">Email address / Username</label>

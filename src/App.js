@@ -2,7 +2,7 @@ import './App.css';
 import {
   createBrowserRouter,
   RouterProvider,
-  Outlet ,useNavigate
+  Outlet ,useNavigate,Navigate
 } from "react-router-dom";
 import { useEffect } from 'react';
 import Register from './pages/Register'
@@ -14,8 +14,9 @@ import { Navbar } from './components/Navbar';
 import Footer from './components/Footer';
 import Profile from './pages/Profile';
 import Allblogs from './pages/Allblogs';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './bootstrap.min.css';
 
+var auth = JSON.parse(localStorage.getItem('details'));
 //outlet it allows us to use parent elements to render their child elements
 
 // function Redirect({ to }) {
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
         element:<Home  />
       }, {
         path:"/allblogs",
-        element:<Allblogs />
+        element:<>{(auth)?<Allblogs />:<Navigate to='/' />}</>
       },
       {
         path:"/:cat",
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
       },
       {
         path:"/profile",
-        element:<Profile />
+        element:<>{(auth)?<Profile />:<Navigate to='/' />}</>
       },
       {
         path:"/post/:id",
@@ -67,21 +68,21 @@ const router = createBrowserRouter([
       },
       {
         path:"/write",
-        element:<Write />
+        element:<>{(auth)?<Write />:<Navigate to='/'/>}</>
       },
       {
         path:"/write/:id",
-        element:<Write />
+        element:<>{(auth)?<Write />:<Navigate to='/'/>}</>
       }
     ]
   },
   {
     path: "/register",
-    element: <Register />,
+    element:<>{(auth)?<Navigate to='/' />: <Register />}</>
   },
   {
     path: "/login",
-    element: <Login />,
+    element:<>{auth?<Navigate to='/'/>:<Login />}</>,
   }
 ]);
 

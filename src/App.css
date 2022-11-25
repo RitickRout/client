@@ -212,7 +212,7 @@ justify-content: space-between;
 }
 
 .teal-bg{
-    background-color: teal;
+    background-color: rgb(48, 129, 129);
 }
 
 .teal-text{
@@ -414,14 +414,21 @@ justify-content: space-between;
     height:40px
 }
 .buttons .btn:hover{
-    background-color: lightgreen;
+    background-color: rgb(131, 246, 131);
     color: black;
 }
 
 .dark{
-    text-shadow: 0 0 3px #FF0000, 0 0 5px #ff0000;
+    text-shadow: 0 0 5px #FF0000, 0 0 0 #ff0000;
 }
 
 .des{
     height: 250px;
+}
+
+.margin{
+    margin-bottom:100px ;
+}
+.ql-editor{
+width: 988px;
 }

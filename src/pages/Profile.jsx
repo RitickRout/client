@@ -9,6 +9,11 @@ import { useNavigate } from "react-router-dom"
 
 function Profile() {
     const navigate = useNavigate()
+    var token = window.localStorage.getItem("auth_token");
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
     const [userName, setUsername] = useState("");
     const [image, setImage] = useState();
     const [imgpath, setImgPath] = useState("")
@@ -19,7 +24,7 @@ function Profile() {
 
     const updateDetails = () => {
         toast("Successfully updated details! ")
-        axios.post("http://localhost:8000/api/auth/updateprofile", { id: user.id }).then(
+        axios.post("http://localhost:8000/api/auth/updateprofile", { id: user.id },{headers}).then(
             (success) => {
                 console.log("success data", success)
                 window.localStorage.setItem("details", JSON.stringify(success.data[0]))
@@ -60,13 +65,13 @@ function Profile() {
             error("Username cannot be empty")
         }
         else if (userName !== user.username || email !== user.email || image) {
-         axios.post("http://localhost:8000/api/users/checkuserdata",{"username":userName,email,"id":user.id}).then((success)=>{
+         axios.post("http://localhost:8000/api/users/checkuserdata",{"username":userName,email,"id":user.id},{headers:headers}).then((success)=>{
             if(success.data ==="success"){
                 formData.append('image', image);
                 formData.append('username', userName);
                 formData.append('email', email);
                 formData.append('id', user.id);
-                axios.post("http://localhost:8000/post", formData).then((success) => {
+                axios.post("http://localhost:8000/post", formData,{headers}).then((success) => {
                     updateDetails()
                     console.log(success, "success message")
                 },
@@ -87,26 +92,6 @@ function Profile() {
         }
 
     }
-
-    // const imagehandler = (e) => {
-    //     e.preventDefault();
-    //     const formData = new FormData()
-    //     if (image && user.id)
-    //     formData.append('image', image);
-    //     formData.append('u_id', user.id);
-    //         console.log("image handler ",formData)
-    //     axios.post("http://localhost:8000/post",formData ).then(
-    //         (success) => {
-    //             toast("Successfully profile updated ! ")
-    //             console.log(success);
-
-    //         },
-    //         (err) => {
-    //             console.log(err)
-    //         }
-    //     )
-    // }
-
 
     console.log(image, imgpath, "value of the image ")
 
@@ -137,8 +122,8 @@ function Profile() {
                             </div>
                             <div className="details">
                                 <div className='border border-1 p-3 '>
-                                    <h4> <div>UserName :</div>  <span className='mx-2'><input name='userName' value={userName} onChange={(e) => { setUsername(e.target.value) }} /></span></h4>
-                                    <h4><div> Email :</div>  <span className='mx-2'><input name='email' value={email} onChange={(e) => { setEmail(e.target.value) }} /></span> </h4>
+                                    <h4> <div>UserName <span className='text-light dark h5'>*</span></div>  <span className='mx-2'><input name='userName' value={userName} onChange={(e) => { setUsername(e.target.value) }} /></span></h4>
+                                    <h4><div> Email <span className='text-light dark h5'>*</span></div>  <span className='mx-2'><input name='email' value={email} onChange={(e) => { setEmail(e.target.value) }} /></span> </h4>
                                     <button className='btn btn-primary' onClick={handleSavechanges}>Save Changes </button>
                                 </div>
                             </div>

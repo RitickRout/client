@@ -8,9 +8,13 @@ function Allblogs() {
   var id = user.id;
   let navigate = useNavigate();
   const [posts, setposts] = useState("")
-
+  var token = window.localStorage.getItem("auth_token");
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  }
   useEffect(() => {
-    axios.post("http://localhost:8000/api/posts/allblogs", { id }).then(
+    axios.post("http://localhost:8000/api/posts/allblogs", { id },{headers}).then(
       (success) => {
         setposts(success.data)
         console.log(success, "success data ")
